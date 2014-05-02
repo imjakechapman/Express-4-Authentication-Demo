@@ -15,11 +15,15 @@ module.exports = function(app, passport) {
   app.get('/login', function(req, res) {
 
     // render the page and pass in any flash data if it exists
-    res.render('login', { message: req.flash('loginMessage') }); 
+    res.render('login/index', { message: req.flash('loginMessage') }); 
   });
 
   // process the login form
-  // app.post('/login', do all our passport stuff here);
+  app.post('/login', passport.authenticate('local-login', {
+    successRedirect: '/profile',
+    failureRedirect: '/login',
+    failureFlash: true
+  }));
 
   // =====================================
   // SIGNUP ==============================
@@ -28,11 +32,15 @@ module.exports = function(app, passport) {
   app.get('/signup', function(req, res) {
 
     // render the page and pass in any flash data if it exists
-    res.render('signup', { message: req.flash('signupMessage') });
+    res.render('register/index', { message: req.flash('signupMessage') });
   });
 
   // process the signup form
-  // app.post('/signup', do all our passport stuff here);
+  app.post('/signup', passport.authenticate('local-signup', {
+    successRedirect: '/profile',
+    failureRedirect: '/signup',
+    failureFlash: true
+  }));
 
   // =====================================
   // PROFILE SECTION =====================
