@@ -1,59 +1,61 @@
-// app/routes.js
-module.exports = function(app, passport) {
+module.exports = function(app, router, passport) {
+
 
   // =====================================
   // HOME PAGE (with login links) ========
   // =====================================
-  app.get('/', function(req, res) {
-    res.render('index'); // load the index file
-  });
+  router.get('/', function(req, res) {
+    // load index
+    res.render('index');
+  })
 
 
 
   // =====================================
   // LOGIN ===============================
   // =====================================
-  // show the login form
-  app.get('/login', function(req, res) {
+  app.route('/login')
+    // show the login form
+    .get(function(req, res) {
+      // render the page and pass in any flash data if it exists
+      res.render('login/index', { message: req.flash('loginMessage') }); 
+    })
 
-    // render the page and pass in any flash data if it exists
-    res.render('login/index', { message: req.flash('loginMessage') }); 
-  });
-
-  // process the login form
-  app.post('/login', passport.authenticate('local-login', {
-    successRedirect: '/profile',
-    failureRedirect: '/login',
-    failureFlash: true
-  }));
+    // process the login form
+    .post(passport.authenticate('local-login', {
+      successRedirect: '/profile',
+      failureRedirect: '/login',
+      failureFlash: true
+    }))
 
 
   // =====================================
   // LOGOUT ==============================
   // =====================================
-  app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-  });
+  router.get('/logout', function(req, res) {
+    req.logout()
+    res.redirect('/')
+  })
 
 
 
   // =====================================
   // SIGNUP ==============================
   // =====================================
-  // show the signup form
-  app.get('/signup', function(req, res) {
+  app.route('/signup')
+    // show the signup form
+    .get(function(req, res) {
 
-    // render the page and pass in any flash data if it exists
-    res.render('register/index', { message: req.flash('signupMessage') });
-  });
+      // render the page and pass in any flash data if it exists
+      res.render('register/index', { message: req.flash('signupMessage') });
+    })
 
-  // process the signup form
-  app.post('/signup', passport.authenticate('local-signup', {
-    successRedirect: '/profile',
-    failureRedirect: '/signup',
-    failureFlash: true
-  }));
+    // process the signup form
+    .post(passport.authenticate('local-signup', {
+      successRedirect: '/profile',
+      failureRedirect: '/signup',
+      failureFlash: true
+    }))
 
 
 
@@ -62,11 +64,11 @@ module.exports = function(app, passport) {
   // =====================================
   // we will want this protected so you have to be logged in to visit
   // we will use route middleware to verify this (the isLoggedIn function)
-  app.get('/profile', isLoggedIn, function(req, res) {
+  router.get('/profile', isLoggedIn, function(req, res) {
     res.render('profile', {
       user : req.user // get the user out of session and pass to template
-    });
-  });
+    })
+  })
 
 
 
@@ -80,10 +82,10 @@ module.exports = function(app, passport) {
   // =====================================
   // FACEBOOOK ROUTES ====================
   // =====================================
-  app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email'}))
+  router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email'}))
 
   // facebook callback
-  app.get('/auth/facebook/callback',
+  router.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
       successRedirect: '/profile',
       failureRedirect: '/'
@@ -93,10 +95,10 @@ module.exports = function(app, passport) {
   // =====================================
   // FACEBOOOK ROUTES ====================
   // =====================================
-  app.get('/auth/twitter', passport.authenticate('twitter'))
+  router.get('/auth/twitter', passport.authenticate('twitter'))
 
   // auth callback
-  app.get('/auth/twitter/callback',
+  router.get('/auth/twitter/callback',
     passport.authenticate('twitter', {
       successRedirect: '/profile',
       failureRedirect: '/'
@@ -106,10 +108,10 @@ module.exports = function(app, passport) {
   // =====================================
   // GOOGLE ROUTES =======================
   // =====================================
-  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}))
+  router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}))
 
   // auth callback
-  app.get('/auth/google/callback',
+  router.get('/auth/google/callback',
     passport.authenticate('google', {
       successRedirect: '/profile',
       failureRedirect: '/'
@@ -125,23 +127,24 @@ module.exports = function(app, passport) {
 // =============================================================================
 
   // locally ---------------
-  app.get('/connect/local', function(req, res) {
-    res.render('register/connect-local', { message: req.flash('loginMessage') })
-  })
+  app.route('/connect/local')
+    .get(function(req, res) {
+      res.render('register/connect-local', { message: req.flash('loginMessage') })
+    })
 
-  app.post('/connect/local', passport.authenticate('local-signup', {
-    successRedirect   : '/profile',
-    failureRedirect   : '/connect/local',
-    failureFlash      : true
-  }))
+    .post(passport.authenticate('local-signup', {
+      successRedirect   : '/profile',
+      failureRedirect   : '/connect/local',
+      failureFlash      : true
+    }))
 
 
 
   // Facebook -------------
-  app.get('/connect/facebook', passport.authorize('facebook', { scope: 'email'}))
+  router.get('/connect/facebook', passport.authorize('facebook', { scope: 'email'}))
 
   // connect callback
-  app.get('/connect/facebook/callback',
+  router.get('/connect/facebook/callback',
     passport.authorize('facebook', {
       successRedirect   : '/profile',
       failureRedirect   : '/'
@@ -149,10 +152,11 @@ module.exports = function(app, passport) {
 
 
   // Twitter -------------
-  app.get('/connect/twitter', passport.authorize('twitter', { scope: 'email'}))
+
+  router.get('/connect/twitter', passport.authorize('twitter', { scope: 'email'}))
 
   // connect callback
-  app.get('/connect/twitter/callback',
+  router.get('/connect/twitter/callback',
     passport.authorize('twitter', {
       successRedirect   : '/profile',
       failureRedirect   : '/'
@@ -160,10 +164,10 @@ module.exports = function(app, passport) {
 
 
   // Google -------------
-  app.get('/connect/google', passport.authorize('google', { scope: ['profile', 'email'] }))
+  router.get('/connect/google', passport.authorize('google', { scope: ['profile', 'email'] }))
 
   // connect callback
-  app.get('/connect/google/callback',
+  router.get('/connect/google/callback',
     passport.authorize('google', {
       successRedirect   : '/profile',
       failureRedirect   : '/'
@@ -171,52 +175,48 @@ module.exports = function(app, passport) {
 
 
 
-
-
 // =============================================================================
 // UNLINK ACCOUNTS =============================================================
 // =============================================================================
 
-// Local unlink -----------------
-app.get('/unlink/local', function(req, res) {
-  var user = req.user;
-  user.local.email = undefined;
-  user.local.password = undefined;
-  user.save(function(err) {
-    res.redirect('/profile')
+  // Local unlink -----------------
+  router.get('/unlink/local', function(req, res) {
+    var user = req.user;
+    user.local.email = undefined;
+    user.local.password = undefined;
+    user.save(function(err) {
+      res.redirect('/profile')
+    })
   })
-})
 
-// Facebook unlink -----------------
-app.get('/unlink/facebook', function(req, res) {
-  var user = req.user;
-  user.facebook.token = undefined;
-  user.save(function(err) {
-    res.redirect('/profile')
+  // Facebook unlink -----------------
+  router.get('/unlink/facebook', function(req, res) {
+    var user = req.user;
+    user.facebook.token = undefined;
+    user.save(function(err) {
+      res.redirect('/profile')
+    })
   })
-})
 
 
-// Twitter unlink -----------------
-app.get('/unlink/twitter', function(req, res) {
-  var user = req.user;
-  user.twitter.token = undefined;
-  user.save(function(err) {
-    res.redirect('/profile')
+  // Twitter unlink -----------------
+  router.get('/unlink/twitter', function(req, res) {
+    var user = req.user;
+    user.twitter.token = undefined;
+    user.save(function(err) {
+      res.redirect('/profile')
+    })
   })
-})
 
 
-// Google unlink -----------------
-app.get('/unlink/google', function(req, res) {
-  var user = req.user;
-  user.google.token = undefined;
-  user.save(function(err) {
-    res.redirect('/profile')
+  // Google unlink -----------------
+  router.get('/unlink/google', function(req, res) {
+    var user = req.user;
+    user.google.token = undefined;
+    user.save(function(err) {
+      res.redirect('/profile')
+    })
   })
-})
-
-
 
 
 } //  end module export
