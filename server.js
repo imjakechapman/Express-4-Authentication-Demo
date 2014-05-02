@@ -48,9 +48,7 @@ app.use(flash())
 
 
 // routes ===============================================================
-var router = express.Router()
-require('./app/routes.js')(app, router, passport)
-app.use('/', router)
+require('./app/routes.js')(app, express, passport)
 
 
 // launch ===============================================================

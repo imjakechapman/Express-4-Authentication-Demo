@@ -1,5 +1,7 @@
-module.exports = function(app, router, passport) {
+module.exports = function(app, express, passport) {
 
+  // Create Router Instance
+  var router = express.Router()
 
   // =====================================
   // HOME PAGE (with login links) ========
@@ -217,6 +219,10 @@ module.exports = function(app, router, passport) {
       res.redirect('/profile')
     })
   })
+
+
+  // Apply routes to app
+  app.use('/', router);
 
 
 } //  end module export
