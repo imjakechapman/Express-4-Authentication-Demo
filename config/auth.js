@@ -1,9 +1,9 @@
 module.exports = {
 
   'facebookAuth' : {
-    'clientId': '1429226543997901',
+    'clientID': '1429226543997901',
     'clientSecret': 'a407b77f4c5eff92e8ab86b49d4619ac',
-    'callback': 'http://lvh.me:8080/auth/facebook/callback'
+    'callbackURL': 'http://lvh.me:8080/auth/facebook/callback'
   },
 
   'twitterAuth' : {
@@ -13,9 +13,9 @@ module.exports = {
   },
 
   'googleAuth' : {
-    'clientID'    : 'your-secret-clientID-here',
-    'clientSecret'  : 'your-client-secret-here',
-    'callbackURL'   : 'http://localhost:8080/auth/google/callback'
+    'clientID'      : '966674310585-3l6attsjru8r9gitf94a3nprqfh5s4a0.apps.googleusercontent.com',
+    'clientSecret'  : 'O0rswsxPavg8QoS8GTL9gsNw',
+    'callbackURL'   : 'http://lvh.me:8080/auth/google/callback'
   }
 
 }

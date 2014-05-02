@@ -28,6 +28,15 @@ module.exports = function(app, passport) {
   }));
 
 
+  // =====================================
+  // LOGOUT ==============================
+  // =====================================
+  app.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+  });
+
+
 
   // =====================================
   // SIGNUP ==============================
@@ -60,6 +69,14 @@ module.exports = function(app, passport) {
   });
 
 
+
+
+
+
+// =============================================================================
+// AUTHENTICATE (FIRST LOGIN) ==================================================
+// =============================================================================
+
   // =====================================
   // FACEBOOOK ROUTES ====================
   // =====================================
@@ -86,15 +103,123 @@ module.exports = function(app, passport) {
     }))
 
 
+  // =====================================
+  // GOOGLE ROUTES =======================
+  // =====================================
+  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email']}))
 
-  // =====================================
-  // LOGOUT ==============================
-  // =====================================
-  app.get('/logout', function(req, res) {
-    req.logout();
-    res.redirect('/');
-  });
-};
+  // auth callback
+  app.get('/auth/google/callback',
+    passport.authenticate('google', {
+      successRedirect: '/profile',
+      failureRedirect: '/'
+    }))
+
+
+
+
+
+
+// =============================================================================
+// AUTHORIZE (ALREADY LOGGED IN / CONNECTING OTHER SOCIAL ACCOUNT) =============
+// =============================================================================
+
+  // locally ---------------
+  app.get('/connect/local', function(req, res) {
+    res.render('register/connect-local', { message: req.flash('loginMessage') })
+  })
+
+  app.post('/connect/local', passport.authenticate('local-signup', {
+    successRedirect   : '/profile',
+    failureRedirect   : '/connect/local',
+    failureFlash      : true
+  }))
+
+
+
+  // Facebook -------------
+  app.get('/connect/facebook', passport.authorize('facebook', { scope: 'email'}))
+
+  // connect callback
+  app.get('/connect/facebook/callback',
+    passport.authorize('facebook', {
+      successRedirect   : '/profile',
+      failureRedirect   : '/'
+    }))
+
+
+  // Twitter -------------
+  app.get('/connect/twitter', passport.authorize('twitter', { scope: 'email'}))
+
+  // connect callback
+  app.get('/connect/twitter/callback',
+    passport.authorize('twitter', {
+      successRedirect   : '/profile',
+      failureRedirect   : '/'
+    }))
+
+
+  // Google -------------
+  app.get('/connect/google', passport.authorize('google', { scope: ['profile', 'email'] }))
+
+  // connect callback
+  app.get('/connect/google/callback',
+    passport.authorize('google', {
+      successRedirect   : '/profile',
+      failureRedirect   : '/'
+    }))
+
+
+
+
+
+// =============================================================================
+// UNLINK ACCOUNTS =============================================================
+// =============================================================================
+
+// Local unlink -----------------
+app.get('/unlink/local', function(req, res) {
+  var user = req.user;
+  user.local.email = undefined;
+  user.local.password = undefined;
+  user.save(function(err) {
+    res.redirect('/profile')
+  })
+})
+
+// Facebook unlink -----------------
+app.get('/unlink/facebook', function(req, res) {
+  var user = req.user;
+  user.facebook.token = undefined;
+  user.save(function(err) {
+    res.redirect('/profile')
+  })
+})
+
+
+// Twitter unlink -----------------
+app.get('/unlink/twitter', function(req, res) {
+  var user = req.user;
+  user.twitter.token = undefined;
+  user.save(function(err) {
+    res.redirect('/profile')
+  })
+})
+
+
+// Google unlink -----------------
+app.get('/unlink/google', function(req, res) {
+  var user = req.user;
+  user.google.token = undefined;
+  user.save(function(err) {
+    res.redirect('/profile')
+  })
+})
+
+
+
+
+} //  end module export
 
 
 
