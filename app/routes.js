@@ -8,6 +8,8 @@ module.exports = function(app, passport) {
     res.render('index'); // load the index file
   });
 
+
+
   // =====================================
   // LOGIN ===============================
   // =====================================
@@ -24,6 +26,8 @@ module.exports = function(app, passport) {
     failureRedirect: '/login',
     failureFlash: true
   }));
+
+
 
   // =====================================
   // SIGNUP ==============================
@@ -42,6 +46,8 @@ module.exports = function(app, passport) {
     failureFlash: true
   }));
 
+
+
   // =====================================
   // PROFILE SECTION =====================
   // =====================================
@@ -53,6 +59,34 @@ module.exports = function(app, passport) {
     });
   });
 
+
+  // =====================================
+  // FACEBOOOK ROUTES ====================
+  // =====================================
+  app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email'}))
+
+  // facebook callback
+  app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+      successRedirect: '/profile',
+      failureRedirect: '/'
+    }))
+
+
+  // =====================================
+  // FACEBOOOK ROUTES ====================
+  // =====================================
+  app.get('/auth/twitter', passport.authenticate('twitter'))
+
+  // auth callback
+  app.get('/auth/twitter/callback',
+    passport.authenticate('twitter', {
+      successRedirect: '/profile',
+      failureRedirect: '/'
+    }))
+
+
+
   // =====================================
   // LOGOUT ==============================
   // =====================================
@@ -61,6 +95,9 @@ module.exports = function(app, passport) {
     res.redirect('/');
   });
 };
+
+
+
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
