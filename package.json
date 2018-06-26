@@ -2,7 +2,7 @@
   "name": "node-authentication-demo",
   "main": "server.js",
   "dependencies": {
-    "express": "~4.0.0",
+    "express": "~4.16.0",
     "mongoose": "~3.8.1",
     "passport": "~0.1.17",
     "passport-local": "~0.1.6",
@@ -13,7 +13,13 @@
     "bcrypt-nodejs": "latest",
     "twig": "^0.7.1",
     "morgan": "~1.0.0",
-    "body-parser": "~1.0.0",
-    "method-override": "~1.0.0"
-  }
+    "body-parser": "~1.3.1",
+    "method-override": "~1.0.0",
+    "snyk": "^1.85.0"
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
